@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS chat_model (
 ALTER TABLE chat_model ADD COLUMN IF NOT EXISTS user_id INTEGER NOT NULL default 1;
 ALTER TABLE chat_model ADD COLUMN IF NOT EXISTS enable_per_mode_ratelimit BOOLEAN DEFAULT false NOT NULL;
 ALTER TABLE chat_model ADD COLUMN IF NOT EXISTS max_token INTEGER NOT NULL default 4096;
-ALTER TABLE chat_model ADD COLUMN IF NOT EXISTS default_token INTEGER NOT NULL default 2048;
+ALTER TABLE chat_model ADD COLUMN IF NOT EXISTS default_token INTEGER NOT NULL default 100000;
 ALTER TABLE chat_model ADD COLUMN IF NOT EXISTS order_number INTEGER NOT NULL default 1;
 ALTER TABLE chat_model ADD COLUMN IF NOT EXISTS http_time_out INTEGER NOT NULL default 120;
 
@@ -113,11 +113,11 @@ CREATE TABLE IF NOT EXISTS chat_session (
     created_at timestamp  DEFAULT now() NOT NULL,
     updated_at timestamp  DEFAULT now() NOT NULL,
     active boolean default true NOT NULL,
-    model character varying(255) NOT NULL DEFAULT 'gpt-3.5-turbo',
+    model character varying(255) NOT NULL DEFAULT 'claude-v1-100k',
     max_length integer DEFAULT 0 NOT NULL,
     temperature float DEFAULT 1.0 NOT NUll,
     top_p float DEFAULT 1.0 NOT NUll,
-    max_tokens int DEFAULT 512 NOT NULL,
+    max_tokens int DEFAULT 100000 NOT NULL,
     n  integer DEFAULT 1 NOT NULL,
     summarize_mode boolean DEFAULT false NOT NULL
 );
@@ -126,9 +126,9 @@ CREATE TABLE IF NOT EXISTS chat_session (
 -- chat_session
 ALTER TABLE chat_session ADD COLUMN IF NOT EXISTS temperature float DEFAULT 1.0 NOT NULL;
 ALTER TABLE chat_session ADD COLUMN IF NOT EXISTS top_p float DEFAULT 1.0 NOT NULL;
-ALTER TABLE chat_session ADD COLUMN IF NOT EXISTS max_tokens int DEFAULT 512 NOT NULL; 
+ALTER TABLE chat_session ADD COLUMN IF NOT EXISTS max_tokens int DEFAULT 10000 NOT NULL; 
 ALTER TABLE chat_session ADD COLUMN IF NOT EXISTS debug boolean DEFAULT false NOT NULL; 
-ALTER TABlE chat_session ADD COLUMN IF NOT EXISTS model character varying(255) NOT NULL DEFAULT 'gpt-3.5-turbo';
+ALTER TABlE chat_session ADD COLUMN IF NOT EXISTS model character varying(255) NOT NULL DEFAULT 'claude-v1-100k';
 ALTER TABLE chat_session ADD COLUMN IF NOT EXISTS n INTEGER DEFAULT 1 NOT NULL;
 ALTER TABLE chat_session ADD COLUMN IF NOT EXISTS summarize_mode boolean DEFAULT false NOT NULL;
 
@@ -263,7 +263,7 @@ CREATE INDEX IF NOT EXISTS chat_snapshot_user_id_idx ON chat_snapshot (user_id);
 -- add index on created_at(brin)
 CREATE INDEX IF NOT EXISTS chat_snapshot_created_at_idx ON chat_snapshot using brin (created_at) ;
 
-UPDATE chat_snapshot SET model = 'gpt-3.5-turbo' WHERE model = '';
+UPDATE chat_snapshot SET model = 'claude-v1-100k' WHERE model = '';
 
 
 
